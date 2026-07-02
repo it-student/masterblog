@@ -26,13 +26,21 @@ def get_next_id() -> int:
     json_db = get_db()
     return json_db['next_id']
 
-def fetch_all():
+def db_fetch_all():
     """
     Simulates a SELECT * FROM db.JSON file and returns all entries as a dict.
     :return:
     """
     json_db = get_db()
     return json_db['data']
+
+def db_commit(json_db: dict) -> None:
+    """
+    Simulates a COMMIT the db.JSON file.
+    :param json_db: The JSON / dictionary construct to be saved into the db.JSON file:
+    """
+    with open('db.json', 'w', encoding='utf-8') as db_file:
+        db_file.write(json.dumps(json_db))
 
 def insert_into(blog_post: dict) -> None:
     """
@@ -43,9 +51,23 @@ def insert_into(blog_post: dict) -> None:
     json_db  = get_db()
     json_db['data'].append(blog_post)
     json_db['next_id'] += 1
-    with open('db.json', 'w', encoding='utf-8') as db_file:
-        db_file.write(json.dumps(json_db))
+    db_commit(json_db)
     print(f'Blog post {blog_post['title']} saved to db.')
+    return None
+
+def delete_from(blogpost_id: int) -> None:
+    """
+    Simulates a DELETE from db.JSON file.
+    :param blogpost_id: The id of the blog post to be deleted.
+    """
+    json_db = get_db()
+    new_rows = []
+    for row in json_db['data']:
+        if row['id'] != blogpost_id:
+            new_rows.append(row)
+    json_db['data'] = new_rows
+    db_commit(json_db)
+    print(f'Blog post {blogpost_id} deleted from db.')
     return None
 
 @app.route('/')
@@ -54,7 +76,7 @@ def index():
     Base route for all blog posts to be presented.
     """
     # add code here to fetch the blog posts from a file
-    blog_posts = fetch_all()
+    blog_posts = db_fetch_all()
     return render_template('index.html', posts=blog_posts)
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -73,6 +95,14 @@ def add():
 
     return render_template('add.html')
 
+@app.route('/delete/<int:post_id>')
+def delete(post_id):
+    """
+    Route for deleting a blog post.
+    :param post_id: The id of the blog post to be deleted.
+    """
+    delete_from(post_id)
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5050, debug=True)
