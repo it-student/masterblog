@@ -34,6 +34,18 @@ def db_fetch_all():
     json_db = get_db()
     return json_db['data']
 
+def get_post_by_id(post_id: int) -> dict:
+    """
+    Simulates a SELECT * FROM tablename WHERE id = post_id from db.JSON file.
+    :param post_id:
+    :return post: dict with all column-entries.:
+    """
+    json_db = get_db()
+    for post in json_db['data']:
+        if post['id'] == post_id:
+            return post
+    return dict()
+
 def db_commit(json_db: dict) -> None:
     """
     Simulates a COMMIT the db.JSON file.
@@ -41,6 +53,22 @@ def db_commit(json_db: dict) -> None:
     """
     with open('db.json', 'w', encoding='utf-8') as db_file:
         db_file.write(json.dumps(json_db))
+
+def update_table(blog_post: dict) -> None:
+    """
+    Simulates a UPDATE the db.JSON file.
+    :param blog_post:
+    """
+    json_db = get_db()
+    for row in json_db['data']:
+        if row['id'] == blog_post['id']:
+            row['author'] = blog_post['author']
+            row['title'] = blog_post['title']
+            row['content'] = blog_post['content']
+            break
+    db_commit(json_db)
+    print(f'Blog post with id:{blog_post["id"]} updated.')
+    return None
 
 def insert_into(blog_post: dict) -> None:
     """
@@ -92,8 +120,32 @@ def add():
                     'content': request.form['content'],}
         insert_into(new_post)
         return redirect(url_for('index'))
+    else:
+        return render_template('add.html')
 
-    return render_template('add.html')
+@app.route('/update/<int:post_id>', methods=['GET', 'POST'])
+def update(post_id):
+    """
+    Route for updating a blog post.
+    :param post_id: the id of the blog post to be updated.
+    """
+    post = get_post_by_id(post_id)
+    if len(post) == 0:
+        return "Post not found.", 404
+
+    if request.method == 'POST':
+        # Update the post in the JSON file
+        updated_post = {'id': post['id'],
+                        'author': request.form['author'],
+                        'title': request.form['title'],
+                        'content': request.form['content'],}
+        update_table(updated_post)
+        # Redirect back to index
+        return redirect(url_for('index'))
+    else:
+        # It's a get method, so display update.html
+        # with the post populated into the form.
+        return render_template('update.html', post=post)
 
 @app.route('/delete/<int:post_id>')
 def delete(post_id):
