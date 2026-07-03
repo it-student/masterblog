@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Flask Blog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Changed your mind?! Rephrase!</h1>
+    <a class="buttonlink" href="{{ url_for('index') }}">
+        <div class="buttonlike">Don't want to rephrase anymore? Click here...</div>
+    </a>
+    <div class="postform">
+        <form class="postform_form" action="/update/{{ post['id'] }}" method="post">
+            <input type="text" name="title" placeholder="What's it about?" value="{{ post['title'] }}" required>
+            <input type="text" name="author" placeholder="Who's this from?" value="{{ post['author'] }}" required>
+            <textarea name="content" rows="6" cols="50" placeholder="Tell more, please...">{{ post['content'] }}
+            </textarea>
+            <button type="submit" value="Submit">shout</button>
+        </form>
+    </div>
+</body>
+</html>
