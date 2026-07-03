@@ -65,6 +65,7 @@ def update_table(blog_post: dict) -> None:
             row['author'] = blog_post['author']
             row['title'] = blog_post['title']
             row['content'] = blog_post['content']
+            row['likes'] = blog_post['likes']
             break
     db_commit(json_db)
     print(f'Blog post with id:{blog_post["id"]} updated.')
@@ -117,7 +118,8 @@ def add():
         new_post = {'id': get_next_id(),
                     'author': request.form['author'],
                     'title': request.form['title'],
-                    'content': request.form['content'],}
+                    'content': request.form['content'],
+                    'likes': 0}
         insert_into(new_post)
         return redirect(url_for('index'))
     else:
@@ -138,7 +140,8 @@ def update(post_id):
         updated_post = {'id': post['id'],
                         'author': request.form['author'],
                         'title': request.form['title'],
-                        'content': request.form['content'],}
+                        'content': request.form['content'],
+                        'likes': post['likes']}
         update_table(updated_post)
         # Redirect back to index
         return redirect(url_for('index'))
@@ -154,6 +157,17 @@ def delete(post_id):
     :param post_id: The id of the blog post to be deleted.
     """
     delete_from(post_id)
+    return redirect(url_for('index'))
+
+@app.route('/like/<int:post_id>')
+def like(post_id):
+    """
+    Route for a blog post like.
+    :param post_id:
+    """
+    post = get_post_by_id(post_id)
+    post['likes'] += 1
+    update_table(post)
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

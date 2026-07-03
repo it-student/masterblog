@@ -1,6 +1,1 @@
-{"next_id": 4, "data": [
-  {"id": 1, "author": "John Doe", "title": "First Post", "content": "This is my first post."},
-  {"id": 2, "author": "Jane Doe", "title": "Second Post", "content": "This is another post."},
-  {"id": 3, "author": "Yasin", "title": "First Test Entry", "content": "Well, like the title says, this is the very first attempt to use the new route's POST method for creating and saving a very new blog post."}
-]
-}
+{"next_id": 5, "data": [{"id": 1, "author": "John Doe", "title": "First Post", "content": "This is my first post.", "likes": 2}, {"id": 2, "author": "Jane Doe", "title": "Second Post", "content": "This is another post.", "likes": 1}, {"id": 3, "author": "Yasin", "title": "First Test Entry - Updated with new update feature!", "content": "Well, like the title says, this is the very first attempt to use the new route's POST method for creating and saving a very new blog post. AND NOW UPDATED even after submission!!!\r\n            ", "likes": 2}, {"id": 4, "author": "Yasin", "title": "Second Time posting", "content": "This is a test after adding different features to this masterblog application.", "likes": 2}]}

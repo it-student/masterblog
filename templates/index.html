@@ -17,7 +17,14 @@
         <p><em>Written by {{ post['author'] }}</em></p>
         <p>{{ post['content'] }}</p>
         <a href="/delete/{{post['id'] }}" class="buttonlink">
-            <div class="buttonlike delete">Delete this post</div>
+            <span class="buttonlike delete">🗑️</span>
+        </a>
+        <a href="/update/{{ post['id'] }}" class="buttonlink">
+            <span class="buttonlike update">✎</span>
+        </a>
+        <a href="/like/{{ post['id'] }}" class="buttonlink">
+            <span class="buttonlike like">👍🏼</span>
+            <span>{{ post['likes'] }}</span>
         </a>
     </div>
     {% endfor %}
